@@ -1,4 +1,7 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import * as courseActions from '../../actions/courseActions'
+
 
 class CoursesPage extends Component {
     state = {
@@ -12,19 +15,32 @@ class CoursesPage extends Component {
     }
 
     onClickSave = () =>{
-      alert(`Saving ${this.state.course.title}`);
+      this.props.dispatch(courseActions.createCourse(this.state.course))
     }
+
+    courseRow = (course, index) => {
+      return <div key={index}>{course.title}</div>
+    }
+
+    
   render() {
     return (
       <div>
         <h1>Courses Page </h1>
+        {this.props.courses.map(this.courseRow)}
         <hr />
         <h2>Add course</h2>
         <input type="text" onChange={this.onTitleChange} value={this.state.course.title}/>
-        <input type="Submit" value="Save" onClick={this.onClickSave}/>
+        <button type="submit" onClick={this.onClickSave}>Save</button>
       </div>
     )
   }
 }
 
-export default CoursesPage;
+
+function mapStateToProps(state, ownProps){
+  return{
+    courses: state.courses
+  }
+}
+export default connect(mapStateToProps)(CoursesPage);
